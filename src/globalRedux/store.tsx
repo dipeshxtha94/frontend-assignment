@@ -5,7 +5,6 @@ const Store= configureStore({
     reducer:{
         products: Slice
     }
-    
 })
 
 export default Store;

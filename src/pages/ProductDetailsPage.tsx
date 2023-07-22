@@ -1,52 +1,65 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { setCardProduct } from '../globalRedux/slice'
+import { ThunkDispatch } from '@reduxjs/toolkit'
+import { useParams } from 'react-router-dom'
+import { fetchSingleData } from '../globalRedux/slice'
+import Loading from '../screens/Loading'
+import Error from '../screens/Error'
+import { useQuery } from '@tanstack/react-query'
 
 const ProductDetailsPage: React.FC = () => {
+  const { id } = useParams<string>()
+  const navigate = useNavigate()
 
-  type Data={
-    title: string,
-    id: string,
-    description: string,
-    category: string,
-    price: number,
-    image: string,
-    rating: {
-      rate: number,
-      count: number
-    }
-  }
+  const dispatch: ThunkDispatch<any, string, any> = useDispatch()
 
-  type State={
-    products:{
-      singleProduct: Data
-    }
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["productDetails"],
+    queryFn: () => dispatch(fetchSingleData(id))
+  })
+
+  if (isLoading) return <Loading />
+  if (isError) return <Error data={JSON.stringify(error)} />
+
+  const handleCart = () => {
+    navigate('/cart')
+    dispatch(setCardProduct(data?.payload as any))
   }
-  const { singleProduct }= useSelector((state: State)=> state.products)
-  //console.log(singleProduct.title)
   return (
-    <main 
-    className='flex w-11/12 md:w-1/2 xl:w-1/2 border border-black rounded-lg m-auto mt-20 p-5 items-center'>
-      <div>
-        <img 
-        src={singleProduct.image} 
-        alt="productimage" 
-        className='w-80 h-40'/>
-      </div>
-      <div
-      className='ml-4'>
-        <p
-        className='text-xl xl:text-2xl font-semibold text-slate-900 mb-1'>
-          {singleProduct.title}
+    <main>
+      <main
+        className='flex w-11/12 md:w-1/2 xl:w-1/2 border
+     border-black rounded-lg m-auto mt-32 p-8 items-center bg-slate-50'>
+        <div>
+          <img
+            src={data?.payload.image}
+            alt="productimage"
+            className='w-80 h-40' />
+        </div>
+        <div
+          className='ml-4'>
+          <p
+            className='text-xl xl:text-2xl font-semibold text-slate-900 mb-1'>
+            {data?.payload.title}
           </p>
-        <p
-        className='text-sm font-normal text-slate-800'>
-          Rs:&nbsp;{singleProduct.price}
+          <p
+            className='text-sm font-normal text-slate-800'>
+            Rs:&nbsp;{data?.payload.price}
           </p>
-        <p
-        className='text-sm font-medium text-slate-800'>
-          {singleProduct.description}
+          <p
+            className='text-sm font-medium text-slate-800'>
+            {data?.payload.description}
           </p>
-      </div>
+          <button
+            onClick={handleCart}
+            className='border border-black rounded-md mt-2 pl-1 pr-1
+           bg-green-500 hover:cursor-pointer hover:bg-green-600'>
+            Add to Cart
+          </button>
+        </div>
+      </main>
     </main>
   )
 }

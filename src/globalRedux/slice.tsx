@@ -1,47 +1,47 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-export const fetchData= createAsyncThunk('fetch', async()=>{
-    try{
-        const data= await fetch('https://fakestoreapi.com/products/')
-        const json= await data.json()
+export const fetchData = createAsyncThunk('fetch', async () => {
+    try {
+        const data = await fetch('https://fakestoreapi.com/products/')
+        const json = await data.json()
         return json
-    } catch(err){
+    } catch (err) {
         console.log(err)
     }
 }
 )
 
-const Slice= createSlice({
-    name: 'products',
-    initialState:{
-        loading: false,
-        data: [],
-        searchValue: '' as string,
-        singleProduct: [],
-    },
-    reducers:{
-       changeSearchValue: (state: any, action: any)=>{
-        state.searchValue= action.payload
-       },
-       setSingleProduct: (state: any, action: any)=>{
-        state.singleProduct= action.payload
-       }
-    },
-    extraReducers:{
-        [fetchData.pending as any]: (state: any)=>{
-            state.loading= true
-        },
-        [fetchData.fulfilled as any]: (state: any, action: any)=>{
-            state.loading= false;
-            state.data= action.payload
-        },
-        [fetchData.rejected as any]: (state: any)=>{
-            state.loading= false;
-            state.data= []
-        }
+export const fetchSingleData = createAsyncThunk('data', async (id: any) => {
+    try {
+        const data = await fetch(`https://fakestoreapi.com/products/${id}`)
+        const json = data.json()
+        return json
+    } catch (err) {
+        console.log(err)
     }
 })
 
-export const { changeSearchValue, setSingleProduct }= Slice.actions
+const Slice = createSlice({
+    name: 'products',
+    initialState: {
+        loading: false,
+        data: [],
+        searchValue: {},
+        cartProduct: [],
+        filteredSearchValue: [],
+    },
+    reducers: {
+        changeSearchValue: (state: any, action: any) => {
+            state.searchValue = action.payload as Object
+        },
+        setCardProduct: (state: any, action: any) => {
+            state.cartProduct.push(action.payload)
+        },
+    },
+    extraReducers: {
+    }
+})
+
+export const { changeSearchValue, setCardProduct } = Slice.actions
 export default Slice.reducer

@@ -14,9 +14,9 @@ const ProductDetailsPage: React.FC = () => {
   const navigate = useNavigate()
 
   const dispatch: ThunkDispatch<any, string, any> = useDispatch()
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["productDetails"],
+   
+   const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["productDetails", id],
     queryFn: () => dispatch(fetchSingleData(id))
   })
 

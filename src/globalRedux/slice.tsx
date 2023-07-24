@@ -15,7 +15,7 @@ export const fetchData = createAsyncThunk('fetch', async () => {
 export const fetchSingleData = createAsyncThunk('data', async (id: any) => {
     try {
         const data = await fetch(`https://fakestoreapi.com/products/${id}`)
-        const json = data.json()
+        const json = await data.json()
         return json
     } catch (err) {
         console.log(err)
@@ -39,8 +39,6 @@ const Slice = createSlice({
             state.cartProduct.push(action.payload)
         },
     },
-    extraReducers: {
-    }
 })
 
 export const { changeSearchValue, setCardProduct } = Slice.actions

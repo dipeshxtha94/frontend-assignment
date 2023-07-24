@@ -44,7 +44,7 @@ const HomePage: React.FC = () => {
   if (isLoading) return <Loading />
   if (isError) return <Error data={JSON.stringify(error)} />
 
-  const filteredValue = data?.payload.filter((val: any) => {
+  const filteredValue = data?.payload?.filter((val: any) => {
     return val.title?.toLowerCase().includes(searchValue.search?.toLowerCase())
   })
 
